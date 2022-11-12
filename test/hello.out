@@ -1,0 +1,132 @@
+S1:
+    .word   0
+S2:
+    .zero   20
+plus10(int,int,int,int,int,int,int,int,int,int):
+.label1:
+  addi  sp,  sp,  -44  
+  add   t0,  a0,  a1   
+  add   t1,  t0,  a2   
+  add   t0,  t1,  a3   
+  add   t1,  t0,  a4   
+  add   t0,  t1,  a5   
+  add   t1,  t0,  a6   
+  add   t0,  t1,  a7   
+  lw    t2,  44(sp)
+  add   t1,  t0,  t2   
+  lw    t2,  48(sp)
+  add   t0,  t1,  t2   
+  mv    a0,  t0   
+  j     .ret_label1
+.ret_label1:
+  addi  sp,  sp,  44   
+  ret
+
+callplus():
+.label3:
+  addi  sp,  sp,  -32  
+  sw    s0,  28(sp)
+  sw    s1,  24(sp)
+  la    s0,  S1   
+  lw    s1,  s0   
+  mv    a0,  s1   
+  li    a1,  1    
+  li    a2,  2    
+  li    a3,  3    
+  li    a4,  4    
+  li    a5,  5    
+  li    a6,  6    
+  li    a7,  7    
+  sw    s0,  0(sp)
+  sw    s0,  4(sp)
+  call  plus10(int,int,int,int,int,int,int,int,int,int)
+  j     .ret_label2
+.ret_label2:
+  lw    s0,  28(sp)
+  lw    s1,  24(sp)
+  addi  sp,  sp,  32   
+  ret
+
+testopt():
+.label4:
+  addi  sp,  sp,  -64  
+  sw    s0,  60(sp)
+  sw    s1,  56(sp)
+  sw    s2,  52(sp)
+  sw    s3,  48(sp)
+  li    s0,  3    
+  li    s1,  6    
+  add   s2,  s0,  s1   
+  add   s3,  s0,  s0   
+  li    a0,  1    
+  li    a1,  2    
+  li    a2,  4    
+  mv    a3,  s0   
+  mv    a4,  s0   
+  mv    a5,  s1   
+  mv    a6,  s1   
+  mv    a7,  s2   
+  sw    s2,  0(sp)
+  sw    s3,  4(sp)
+  call  plus10(int,int,int,int,int,int,int,int,int,int)
+  j     .ret_label3
+.ret_label3:
+  lw    s0,  60(sp)
+  lw    s1,  56(sp)
+  lw    s2,  52(sp)
+  lw    s3,  48(sp)
+  addi  sp,  sp,  64   
+  ret
+
+add(int(*)[5],int):
+.label5:
+  addi  sp,  sp,  -12  
+  li    t0,  0    
+  sw    t0,  0(sp)
+  sw    a1,  4(sp)
+  sw    a0,  8(sp)
+.label6:
+  lw    t0,  4(sp)
+  slti  t1,  t0,  1    
+  xori  t1,  t1,  1    
+  beqz  t1,  .label8
+.next7:
+  lw    t0,  4(sp)
+  addi  t1,  t0,  -1   
+  lw    t0,  0(sp)
+  lw    t2,  8(sp)
+  addi  t3,  t2,  0    
+  li    t2,  4    
+  mul   t2,  t1   
+  add   t2,  t3,  t2   
+  lw    t3,  t2   
+  add   t2,  t0,  t3   
+  sw    t2,  0(sp)
+  sw    t1,  4(sp)
+  j     .label6
+.label8:
+  lw    t0,  0(sp)
+  mv    a0,  t0   
+  j     .ret_label4
+.ret_label4:
+  addi  sp,  sp,  12   
+  ret
+
+main():
+.label10:
+  addi  sp,  sp,  -8   
+  sw    s0,  4(sp)
+  sw    s1,  0(sp)
+  la    s0,  S2   
+  addi  s1,  s0,  0    
+  mv    a0,  s1   
+  li    a1,  5    
+  call  add(int(*)[5],int)
+  mv    a0,  a0   
+  j     .ret_label5
+.ret_label5:
+  lw    s0,  4(sp)
+  lw    s1,  0(sp)
+  addi  sp,  sp,  8    
+  ret
+
